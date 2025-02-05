@@ -1,21 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 const App = () => {
+  const [expression, setExpression] = useState("");
+  const [result, setResult] = useState("");
+
+  const handlePress = (value: string) => {
+  if (value === "=") {
+    try {
+      const calculatedResult = eval(expression).toString(); 
+      setResult(calculatedResult); 
+      setExpression(calculatedResult); 
+    } catch {
+      setResult("Hata");
+    }
+  } else if (value === "C") {
+    setExpression("");
+    setResult("");
+  } else {
+    setExpression(prev => prev + value);
+  }
+};
+
   const buttons = [
     "7", "8", "9", "4",
     "5", "6", "1", "2",
-    "3", "C", "0", "*",
+    "3", "c", "0", "*",
     "/", "+", "-", "=",
     "."
   ];
 
   return (
     <View style={styles.container}>
-      <Text style={styles.display}>0</Text>
+      <Text style={styles.display}>{expression || "0"}</Text>
+      <Text style={styles.result}>{result}</Text>
       <View style={styles.buttonContainer}>
         {buttons.map((btn) => (
-          <TouchableOpacity key={btn} style={styles.button}>
+          <TouchableOpacity key={btn} style={styles.button} onPress={() => handlePress(btn)}>
             <Text style={styles.buttonText}>{btn}</Text>
           </TouchableOpacity>
         ))}
@@ -34,6 +55,11 @@ const styles = StyleSheet.create({
   display: {
     fontSize: 32,
     marginBottom: 10,
+  },
+  result: {
+    fontSize: 24,
+    color: "gray",
+    marginBottom: 20,
   },
   buttonContainer: {
     flexDirection: "row",
@@ -54,7 +80,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: "white",
     fontWeight: "bold",
-    
   },
 });
 
